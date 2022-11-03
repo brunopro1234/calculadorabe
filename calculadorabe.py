@@ -1,61 +1,129 @@
-import math
-def peso(m, g):
-	calculo = m*g 
-	return calculo 
-print("calculadora de aceleracion, te quiero mucho profe")
-m=float(input("Ingrese la masa del cuerpo (Kilogramos) "))
-f=float(input("Ingrese la fuerza aplicada al cuerpo (Newton)(Ingresar valor negativo (-) para mover el objeto en la direccion opuesta) "))
-g=9.8
-fx=f
-pesoy=peso(m,g)
-if input("¿El plano esta inclinado? (s/n) ").lower()=="s":
-    inc=int(input("¿Cuantos grados(°) esta inclinado el plano? "))
-    while inc>90 or inc<0:
-        print("No es posible, ingrese otro valor ")
-        inc=int(input("¿Cuantos grados(°) esta inclinado el plano? "))
-    fx=fx+m*g*math.sin(inc*math.pi/180)
-    pesoy=m*g*math.cos(inc*math.pi/180)
-if input("¿Hay friccion? (s/n) ").lower()=="s":
-    material=input("¿Que materiales componen a los cuerpos?\na. Madera sobre madera\nb. Acero sobre hielo\nc. Teflón sobre teflón\nd. Caucho sobre cemento seco\ne. Vidrio sobre vidrio\nf. Esquí sobre nieve\ng. Madera sobre cuero\nh. Aluminio sobre acero\ni. Articulaciones humanas\nj. Personalizado\n")
-    if material=="a":
-        ue=0.5
-        ud=0.3
-    elif material=="b":
-        ue=0.03
-        ud=0.02
-    elif material=="c":
-        ue=0.04
-        ud=0.04
-    elif material=="d":
-        ue=1
-        ud=0.8
-    elif material=="e":
-        ue=0.9
-        ud=0.4
-    elif material=="f":
-        ue=0.1
-        ud=0.05
-    elif material=="g":
-        ue=0.5
-        ud=0.4
-    elif material=="h":
-        ue=0.61
-        ud=0.47
-    elif material=="i":
-        ue=0.02
-        ud=0.003
-    elif material=="j":
-        ue=float(input("Coeficiente de friccion estatico: "))
-        ud=float(input("Coeficiente de friccion dinamico: "))
-    ffe=ue*pesoy
-    ffd=ud*pesoy
-    fuerzaNeta=fx-ffd
-    if ffe>abs(fx):
-        print("Fuerza Aplicada:",f,"Newton\nFuerza de Friccion Estatica:",ffe,"Newton\nEste objeto no se mueve porque la friccion entre los cuerpos es muy grande")
-        exit()
-    else:a=fuerzaNeta/m
-else:
-    a=fx/m
-    if a==0:
-        print("Este objeto no se mueve")
-print("El objeto tiene una aceleracion de",a,"m/s^2 (Valor positivo: movimiento -> Valor negativo: <-)")
+import matplotlib.pyplot as plt
+import numpy as np
+import time
+import os
+
+#Nos pidieron hacer una función cualquiera, yo la hice para calcular la distancia de la etapa :D
+def cal_dist(v,t,a):
+    val= v*t+0.5*a*(t**2)
+    return val
+
+dis_total=0
+while True: #Solo para que no pare de preguntar hasta que se cumpla la condición*
+    num_etapas = int(input("Ingrese el numero de etapas: "))
+    if num_etapas >= 3: break #condición
+    print("NOO")
+for i in range(num_etapas):
+
+    print(f"Inicio de la etapa n°{i+1}")
+
+    n_no = 0 #Solo puede decir que no sabe una variable una vez
+
+    #aceleracion
+    acel_ver=input("Sabe la aceleracion?(Si/No): ")
+    if acel_ver.lower()=="si":
+        tf_acel = True
+        acel = float(input("Introduzca la aceleracion: "))
+    else:
+        tf_acel = False
+        n_no+=1
+
+    #tiempo
+    if n_no == 0:
+        tiempo_ver=input("Sabe el tiempo?(Si/No): ")
+        if tiempo_ver.lower()=="si":
+            tf_tiempo = True
+            tiempo = float(input("Introduzca el tiempo: "))
+        else:
+            tf_tiempo = False
+            n_no+=1
+    else:
+        tf_tiempo = True
+        tiempo = float(input("Introduzca el tiempo: "))
+
+    # Velocidad inicial
+    if i == 0: #La velocidad inicial se pregunta solo la primera vez*
+        if n_no == 0:
+            vel_ini_ver=input("Sabe la Velocidad Inicial?(Si/No): ")
+            if vel_ini_ver.lower()=="si":
+                vel_ini = float(input("Introduzca la velocidad inicial: "))
+                tf_vel_ini = True
+            else:
+                tf_vel_ini = False
+                n_no+=1
+        else:
+            vel_ini = float(input("Introduzca la velocidad inicial: "))
+            tf_vel_ini = True
+    else: #si no es la primera vez, se "saca" de la velocidad final de la etapa anterior
+        if tf_vel_fin==True: vel_ini = vel_fin
+        elif tf_vel_fin==False: vel_ini = vel_fin
+
+    #Velocidad final
+    if tf_acel==True and tf_tiempo==True and tf_vel_ini==True:
+            tf_vel_fin = False
+    else:
+        if n_no==0:
+            vel_fin_ver=input("Sabe la Velocidad Final?(Si/No): ")
+            if vel_fin_ver.lower()=="si":
+                vel_fin = float(input("Introduzca la velocidad final: "))
+                tf_vel_fin = True
+        else:
+            tf_vel_fin = True
+            vel_fin = float(input("Introduzca la velocidad final: "))
+            tf_vel_fin = True
+
+    ###CALCULOS###
+
+    # calculo velocidad final
+    if tf_vel_fin==False:
+        vel_fin = (acel*tiempo)+vel_ini
+        if acel<0: vel_fin=0
+        print("La velocidad final es de:",vel_fin)
+
+    # calculo velocidad inicial
+    if tf_vel_ini==False:
+        vel_ini = vel_fin-acel*tiempo
+        print("La velocidad inicial es de:",vel_ini)
+
+    # calculo tiempo
+    if tf_tiempo==False:
+        tiempo = (vel_fin-vel_ini)/acel
+        print("El tiempo es de:",tiempo)
+
+    # calculo aceleracion
+    if tf_acel==False:
+        acel = (vel_fin-vel_ini)/tiempo
+        print("La aceleracion es de:",acel)
+
+
+    dis_etapa = cal_dist(vel_ini, tiempo, acel)
+    print(f"La distancia recorrida es de: {dis_etapa}\n")
+    dis_total += dis_etapa
+    time.sleep(1) #darle tiempo a q lo vea jaja
+    #GRAFICADO#
+    fig, (gf1,gf2) = plt.subplots(2,1)
+    X = np.linspace(0,tiempo)
+    fig.suptitle(None)
+
+    Y1 = vel_ini*X+0.5*acel*(X**2)  #Formula distancia
+    gf1.plot(X,Y1,marker = ".",color = "red")
+    gf1.grid()
+    gf1.set_title("Distancia")
+    gf1.set_ylabel("Metros")
+    gf1.set_xlabel("Segundos")
+
+    Y2 = (acel * X) + vel_ini  # Formula velocidad
+    gf2.plot(X,Y2, marker = "x")
+    gf2.grid()
+    gf2.set_title("Velocidad")
+    gf2.set_ylabel("Metros/segundo")
+    gf2.set_xlabel("Segundos")
+
+    plt.subplots_adjust(hspace=0.4)
+    plt.show()
+
+    ##clear de la pantalla
+
+    time.sleep(0.1)
+    input("Enter para continuar")
+    os.system('cls')

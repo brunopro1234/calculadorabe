@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import time
-import os
 
 #Nos pidieron hacer una función cualquiera, yo la hice para calcular la distancia de la etapa :D
 def cal_dist(v,t,a):
@@ -126,4 +125,3 @@ for i in range(num_etapas):
 
     time.sleep(0.1)
     input("Enter para continuar")
-    os.system('cls')
